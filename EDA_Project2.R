@@ -1,4 +1,5 @@
 library(ggplot2)
+library(jpeg)
 ##R script file for questions on Project 2 for Exploratory Data Analysis
 #Import Data into data frames
 #NEI <- readRDS("summarySCC_PM25.rds")
@@ -8,7 +9,10 @@ library(ggplot2)
 #make a plot showing the total PM2.5 emission from all sources for each of the years 1999, 2002, 2005, and 2008.
 #==============================================================================
 P2Q1<-aggregate(Emissions~year,data=NEI,FUN=sum,na.rm=TRUE)
-plot(P2Q1$year,P2Q1$Emissions,type="o",xlab="Year",ylab="Emissions",main="Total PM2.5 emissions for all sources by year")
+jpeg("P2Q1.jpeg")
+p<-plot(P2Q1$year,P2Q1$Emissions,type="o",xlab="Year",ylab="Emissions",main="Total PM2.5 emissions for all sources by year")
+print(p)
+dev.off()
 #==============================================================================
 #==============================================================================
 #Q2 - Have total emissions from PM2.5 decreased in the Baltimore City, 
@@ -18,8 +22,10 @@ plot(P2Q1$year,P2Q1$Emissions,type="o",xlab="Year",ylab="Emissions",main="Total 
 
 NEIQ2<-subset(NEI,fips=="24510")
 P2Q2<-aggregate(Emissions~year,data=NEIQ2,FUN=sum,na.rm=TRUE)
-plot(P2Q2$year,P2Q2$Emissions,type="o",xlab="Year",ylab="Emissions",main="Total PM2.5 emissions for Baltimore City,Maryland from all sources by year")
-
+jpeg("P2Q2.jpeg")
+p<-plot(P2Q2$year,P2Q2$Emissions,type="o",xlab="Year",ylab="Emissions",main="Total PM2.5 emissions for Baltimore City,Maryland from all sources by year")
+print(p)
+dev.off()
 
 #==============================================================================
 #==============================================================================
@@ -29,16 +35,20 @@ plot(P2Q2$year,P2Q2$Emissions,type="o",xlab="Year",ylab="Emissions",main="Total 
 #this question.
 #==============================================================================
 P2Q3<-aggregate(Emissions~year+type,data=NEIQ2,FUN=sum,na.rm=TRUE)
+jpeg("P2Q3.jpeg")
 p<-ggplot(P2Q3,aes(year,Emissions,color=type))+geom_line()+geom_point()+ggtitle("Total PM2.5 emissions for Baltimore City,Maryland from all sources by type and year")
 print(p)
+dev.off()
 #==============================================================================
 #Q4 - Across the United States, how have emissions from coal combustion-related sources changed from 1999–2008?
 #==============================================================================
 SCCcoal <- SCC[grepl("coal", SCC$Short.Name, ignore.case = T),]
 NEIcoal <- NEI[NEI$SCC %in% SCCcoal$SCC,]
-P2Q3 <- aggregate(Emissions ~ year + type, NEIcoal, sum)
-p<-ggplot(P2Q3,aes(year,Emissions,color=type))+geom_line()+geom_point()+ggtitle(expression("Total US PM2.5 Coal Emission by Type and Year"))
+jpeg("P2Q4.jpeg")
+P2Q4 <- aggregate(Emissions ~ year + type, NEIcoal, sum)
+p<-ggplot(P2Q4,aes(year,Emissions,color=type))+geom_line()+geom_point()+ggtitle(expression("Total US PM2.5 Coal Emission by Type and Year"))
 print(p)
+dev.off()
 #==============================================================================
 
 
@@ -47,9 +57,11 @@ print(p)
 
 #==============================================================================
 NEIMotor <- subset(NEI, NEI$fips == "24510" & NEI$type == "ON-ROAD")
+jpeg("P2Q5.jpeg")
 P2Q5 <- aggregate(Emissions ~ year, NEIMotor, sum)
 p<-ggplot(P2Q5 ,aes(year,Emissions))+geom_line()+geom_point()+ggtitle(expression("Total US PM2.5 Emission by motor vehicles in Baltimore across Year"))
 print(p)
+dev.off()
 #==============================================================================
 
 
@@ -58,6 +70,8 @@ print(p)
 #seen greater changes over time in motor vehicle emissions?
 #==============================================================================
 NEIMotor2 <- subset(NEI, NEI$fips %in% c("24510","06037") & NEI$type == "ON-ROAD")
+jpeg("P2Q6.jpeg")
 P2Q6 <- aggregate(Emissions ~ year+fips, NEIMotor2, sum)
 p<-ggplot(P2Q6 ,aes(year,Emissions,col=fips))+geom_line()+geom_point()+ggtitle(expression("Total US PM2.5 Emission by motor vehicles in Baltimore and LA across Year"))
 print(p)
+dev.off()
